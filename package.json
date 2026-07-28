@@ -1,0 +1,25 @@
+{
+  "name": "webhookdeliverysystem",
+  "version": "1.0.0",
+  "description": "This is a webhook delivery system",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.18.1",
+    "bullmq": "^5.81.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "helmet": "^8.3.0",
+    "ioredis": "^5.11.1",
+    "pino": "^10.3.1",
+    "pino-http": "^11.0.0",
+    "uuid": "^14.0.1",
+    "zod": "^4.4.3"
+  }
+}
