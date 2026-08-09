@@ -15,7 +15,7 @@ datasource db {
 
 enum CustomerStatus {
   ACTIVE
-  DEACTIVATING
+  DEACTIVATION_REQUESTED
   INACTIVE
 }
 
