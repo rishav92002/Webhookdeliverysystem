@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum CustomerStatus {
+  ACTIVE
+  DEACTIVATING
+  INACTIVE
+}
+
+enum EventStatus {
+  RECEIVED
+  FANOUT_IN_PROGRESS
+  DELIVERING
+  COMPLETED
+}
+
+enum DeliveryStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+  FAILED_PERMANENTLY
+}
+
+enum OutboxStatus {
+  PENDING
+  PUBLISHED
+}
+
+
+
+model Customer {
+  id  String @id @default(uuid())
+  name String
+  apiKeyHash String @unique
+  status    CustomerStatus @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  webhookEndpoints WebhookEndpoint[]
+  events Event[]
+
+
+}
+
+model WebhookEndpoint {
+  id              String   @id @default(uuid())
+  customerId      String
+  customer        Customer @relation(fields: [customerId], references: [id])
+
+  url             String
+  eventType       String
+  encryptedSecret String
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  deliveries Delivery[]
+
+  @@unique([customerId, url, eventType])
+  @@index([customerId, eventType])
+}
+
+model Event {
+  id             String      @id @default(uuid())
+  customerId     String
+  customer       Customer    @relation(fields: [customerId], references: [id])
+
+  idempotencyKey String
+  eventType      String
+  payload        Json
+  status         EventStatus @default(RECEIVED)
+
+  createdAt DateTime @default(now())
+
+  deliveries Delivery[]
+  outbox      OutboxEvent?
+
+  @@unique([customerId, idempotencyKey])
+  @@index([customerId, createdAt])
+}
+
+model OutboxEvent {
+  id      String @id @default(uuid())
+  eventId String @unique
+  event   Event  @relation(fields: [eventId], references: [id])
+
+  status    OutboxStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  publishedAt DateTime?
+
+  @@index([status, createdAt])
+}
+
+model Delivery {
+  id         String          @id @default(uuid())
+  eventId    String
+  endpointId String
+
+  event    Event           @relation(fields: [eventId], references: [id])
+  endpoint WebhookEndpoint @relation(fields: [endpointId], references: [id])
+
+  status       DeliveryStatus @default(PENDING)
+  retryCount   Int            @default(0)
+  nextRetryAt  DateTime?
+  lastError    String?
+  processingAt DateTime?
+  completedAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([eventId, endpointId])
+  @@index([status, nextRetryAt])
+  @@index([eventId])
+}
