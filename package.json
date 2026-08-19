@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
-    "start": "node dist/server.ts"
+    "start": "node dist/server.ts",
+    "test:api": "tsx src/mock/runApiTests.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",

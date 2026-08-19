@@ -54,6 +54,7 @@ model Customer {
 
 }
 
+
 model WebhookEndpoint {
   id              String   @id @default(uuid())
   customerId      String
@@ -73,6 +74,7 @@ model WebhookEndpoint {
   @@unique([customerId, url, eventType])
   @@index([customerId, eventType])
 }
+
 
 model Event {
   id             String      @id @default(uuid())
