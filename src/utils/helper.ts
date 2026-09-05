@@ -63,3 +63,17 @@ export const decryptSecret = (encryptedSecret: string): string => {
   
     return decrypted.toString("utf8");
   };
+  export const generateWebhookSignature = (
+    secret: string,
+    timestamp: string,
+    body: string
+  ) => {
+    const signedPayload = `${timestamp}.${body}`;
+  
+    const signature = crypto
+      .createHmac("sha256", secret)
+      .update(signedPayload)
+      .digest("hex");
+  
+    return `sha256=${signature}`;
+  };

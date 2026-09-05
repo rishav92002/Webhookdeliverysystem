@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.ts",
-    "start:worker": "tsx watch src/workers/index.ts",
+    "start:outbox-worker": "tsx watch src/workers/index.ts",
+    "start:delivery-publisher": "tsx watch src/publishers/deliveryPublisher/index.ts",
     "test:api": "tsx src/mock/runApiTests.ts",
     "test:redis": "tsx src/lib/redistest.ts"
   },
