@@ -2,10 +2,9 @@ import { prisma } from "../lib/prisma.js";
 import { DeliveryStatus } from "../../generated/prisma/client.js";
 import axios, { AxiosError } from "axios";
 import { scheduleDeliveryRetry } from "../queues/delivery.queue.js";
+import { config } from "../config/config.js";
 
-export const MAX_RETRIES = 5;
-const BASE_DELAY_MS = 1_000;
-const MAX_DELAY_MS = 60_000;
+export const MAX_RETRIES = config.delivery.maxRetries;
 
 type FailureKind = "retryable" | "non_retryable";
 
@@ -71,15 +70,16 @@ export function computeDelayMs(
   retryCount: number,
   retryAfterMs?: number,
 ): number {
+  const { baseDelayMs, maxDelayMs } = config.delivery;
   const exponential = Math.min(
-    BASE_DELAY_MS * 2 ** (retryCount - 1),
-    MAX_DELAY_MS,
+    baseDelayMs * 2 ** (retryCount - 1),
+    maxDelayMs,
   );
   const jitter = Math.floor(Math.random() * exponential * 0.25);
-  let delay = Math.min(exponential + jitter, MAX_DELAY_MS);
+  let delay = Math.min(exponential + jitter, maxDelayMs);
 
   if (retryAfterMs != null) {
-    delay = Math.min(Math.max(delay, retryAfterMs), MAX_DELAY_MS);
+    delay = Math.min(Math.max(delay, retryAfterMs), maxDelayMs);
   }
 
   return delay;

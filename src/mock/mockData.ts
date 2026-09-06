@@ -3,8 +3,10 @@
  * Used by `src/mock/runApiTests.ts`.
  */
 
+import { config } from "../config/config.js";
+
 export const mockData = {
-  baseUrl: process.env.API_BASE_URL ?? "http://localhost:5000",
+  baseUrl: config.apiBaseUrl,
 
   customer: {
     create: {

@@ -1,5 +1,9 @@
-import { config } from './config.js'
+import { Redis } from "ioredis";
+import { config } from "./config.js";
 
-import {Redis} from 'ioredis'
+const redisOptions = {
+  maxRetriesPerRequest: null,
+  ...(config.redisUrl.startsWith("rediss://") ? { tls: {} } : {}),
+};
 
-export const redis = new Redis(config.redisurl?? 'redis://localhost:6379');
+export const redis = new Redis(config.redisUrl, redisOptions);

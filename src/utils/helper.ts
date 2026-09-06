@@ -1,15 +1,12 @@
-import crypto from "node:crypto"
+import crypto from "node:crypto";
+import { config } from "../config/config.js";
+
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 12;
 
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
-
-if (!ENCRYPTION_KEY) {
-    throw new Error("ENCRYPTION_KEY is not configured");
-  }
-const key = Buffer.from(ENCRYPTION_KEY, "hex");
+const key = Buffer.from(config.encryptionKey, "hex");
 if (key.length !== 32) {
-    throw new Error("ENCRYPTION_KEY must be 32 bytes");
+  throw new Error("ENCRYPTION_KEY must be 32 bytes (64 hex characters)");
 }
 export const generateApikey = () =>{
     const apiKey = crypto.randomBytes(32).toString('hex');

@@ -5,6 +5,7 @@ import {
   generateWebhookSignature,
   decryptSecret,
 } from "../../utils/helper.js";
+import { config } from "../../config/config.js";
 import {
   classifyError,
   computeDelayMs,
@@ -57,7 +58,7 @@ export const processDelivery = async (deliveryId: string) => {
         "X-Webhook-Timestamp": timestamp,
         "Idempotency-Key": delivery.event.idempotencyKey,
       },
-      timeout: 10_000,
+      timeout: config.delivery.requestTimeoutMs,
     });
 
     await prisma.delivery.update({

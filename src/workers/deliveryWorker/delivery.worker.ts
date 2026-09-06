@@ -1,11 +1,8 @@
-import {prisma} from '../../lib/prisma.js'
-import {Worker} from 'bullmq'
-import {redis} from '../../config/redis.js'
-import { processDelivery } from './processDelivery.js';
+import { Worker } from "bullmq";
+import { config } from "../../config/config.js";
+import { redis } from "../../config/redis.js";
+import { processDelivery } from "./processDelivery.js";
 
-type DeliveryJobData = {
-    deliveryId: string;
-};
 export const startDeliveryWorker = () => {
     const worker = new Worker(
       "delivery-queue",
@@ -14,7 +11,7 @@ export const startDeliveryWorker = () => {
       },
       {
         connection: redis,
-        concurrency: 10,
+        concurrency: config.delivery.workerConcurrency,
       }
     );
   
