@@ -18,6 +18,7 @@ const envSchema = z.object({
   DELIVERY_BASE_DELAY_MS: z.coerce.number().default(1_000),
   DELIVERY_MAX_DELAY_MS: z.coerce.number().default(60_000),
   DELIVERY_TIMEOUT_MS: z.coerce.number().default(10_000),
+  DELIVERY_STALE_PROCESSING_MS: z.coerce.number().optional(),
   DELIVERY_WORKER_CONCURRENCY: z.coerce.number().optional(),
   PUBLISHER_POLL_MS: z.coerce.number().optional(),
   OUTBOX_POLL_MS: z.coerce.number().optional(),
@@ -62,6 +63,9 @@ export const config = {
     baseDelayMs: parsed.DELIVERY_BASE_DELAY_MS,
     maxDelayMs: parsed.DELIVERY_MAX_DELAY_MS,
     requestTimeoutMs: parsed.DELIVERY_TIMEOUT_MS,
+    staleProcessingMs:
+      parsed.DELIVERY_STALE_PROCESSING_MS ??
+      Math.max(parsed.DELIVERY_TIMEOUT_MS * 3, 60_000),
     workerConcurrency:
       parsed.DELIVERY_WORKER_CONCURRENCY ?? (isProd ? 20 : 5),
   },

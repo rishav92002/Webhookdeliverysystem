@@ -15,11 +15,21 @@ export const deliveryQueue = new Queue<DeliveryJobData>("delivery-queue", {
 });
 
 export const addDeliveryJob = async (job: DeliveryJobData) => {
-  await deliveryQueue.add(
-    "delivery-queue",
-    { deliveryId: job.deliveryId },
-    { jobId: job.deliveryId },
-  );
+  try {
+    await deliveryQueue.add(
+      "delivery-queue",
+      { deliveryId: job.deliveryId },
+      { jobId: job.deliveryId },
+    );
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message.toLowerCase().includes("already exists")
+    ) {
+      return;
+    }
+    throw error;
+  }
 };
 
 export const scheduleDeliveryRetry = async (
