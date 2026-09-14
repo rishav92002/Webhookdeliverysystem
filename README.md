@@ -315,6 +315,10 @@ Potential future improvements include:
 - Automated unit and integration tests
 - Graceful shutdown and deployment hardening
 
+## Architecture & Design Decisions
+
+For detailed flow diagrams, state machines, and the rationale behind every major design choice, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 ## Important Notes
 
 - PostgreSQL is the durable source of truth; Redis/BullMQ is used for job execution.
