@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.js";
-import { EventStatus, DeliveryStatus, OutboxStatus } from "../../generated/prisma/client.js";
+import { EventStatus, DeliveryStatus} from "../../generated/prisma/client.js";
 
 export const completeEvent = async (eventId: string) => {
     return prisma.$transaction(async (tx) => {
