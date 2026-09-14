@@ -8,3 +8,5 @@ node_modules/
 .agents/
 .claude/
 .windsurf/
+dist/
+skills-lock.json
