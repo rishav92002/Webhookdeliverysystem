@@ -1,5 +1,6 @@
 import { prisma } from "../../lib/prisma.js";
 import { DeliveryStatus } from "../../../generated/prisma/client.js";
+import { completeEvent } from "../../services/eventCompletion.service.js";
 import axios from "axios";
 import {
   generateWebhookSignature,
@@ -71,6 +72,9 @@ export const processDelivery = async (deliveryId: string) => {
         processingAt: null,
       },
     });
+
+    await completeEvent(delivery.event.id);
+
   } catch (error) {
     const failure = classifyError(error);
 
@@ -84,6 +88,7 @@ export const processDelivery = async (deliveryId: string) => {
           nextRetryAt: null,
         },
       });
+      await completeEvent(delivery.event.id);
       return;
     }
 
@@ -100,6 +105,7 @@ export const processDelivery = async (deliveryId: string) => {
           nextRetryAt: null,
         },
       });
+      await completeEvent(delivery.event.id);
       return;
     }
 

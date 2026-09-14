@@ -27,7 +27,7 @@ export const startDeliveryWorker = () => {
     });
   
     console.log("Delivery worker started");
-  };
+};
 
 
 
